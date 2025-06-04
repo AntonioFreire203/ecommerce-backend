@@ -1,0 +1,23 @@
+{
+  "name": "ecommerce-backend",
+  "version": "1.0.0",
+  "description": "ecommerce-backend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AntonioFreire203/ecommerce-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AntonioFreire203/ecommerce-backend/issues"
+  },
+  "homepage": "https://github.com/AntonioFreire203/ecommerce-backend#readme",
+  "dependencies": {
+    "mongodb": "^6.16.0"
+  }
+}
