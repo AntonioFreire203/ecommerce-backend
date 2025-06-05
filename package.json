@@ -2,9 +2,14 @@
   "name": "ecommerce-backend",
   "version": "1.0.0",
   "description": "ecommerce-backend",
-  "main": "index.js",
+  "main": "src/db/db.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test:conexao": "node src/scripts/testarConexao.js",
+    "test:usuario": "node src/scripts/testarUsuario.js",
+    "test:produto": "node src/scripts/testarProduto.js",
+    "test:categoria": "node src/scripts/testarCategoria.js",
+    "listar:usuarios": "node src/scripts/listarUsuarios.js",
+    "listar:produtos": "node src/scripts/listarProdutos.js"
   },
   "repository": {
     "type": "git",

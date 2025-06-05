@@ -12,8 +12,25 @@ async function testarCategoria() {
   console.log("Teste: buscar categorias");
   await Categoria.buscar();
 
-//   console.log("Teste: excluir categorias de teste");
-//   await Categoria.deletar({ nome: "Informática" });
+
+ let cat2 = new Categoria("Beleza ", "Produtos de cuidados pessoais e cosméticos");
+  await cat2.inserir(); 
+
+
+  console.log("Teste: exclusão de categoria");
+  await Categoria.deletar({ nome: "Beleza " });
+
+  console.log("Teste: buscar categorias após exclusão");
+  await Categoria.buscar();
+
+  console.log("Teste: atualizar categoria");
+    await Categoria.atualizar(
+    { nome: "Informática" },
+    { descricao: "Tecnologia, computadores e acessórios" }
+    );
+        console.log("Teste: buscar categorias após atualização");
+        await Categoria.buscar();
+
 }
 
 testarCategoria();

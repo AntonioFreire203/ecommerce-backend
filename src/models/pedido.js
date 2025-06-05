@@ -32,17 +32,13 @@ class Pedido {
       throw new Error("Um ou mais produtos não existem.");
     }
 
-    // Validar e calcular o valor total
     for (let item of this.itens) {
       const produto = produtos.find(p => p._id.equals(item.produtoId));
-
       if (!produto) continue;
-
       if (produto.estoque < item.quantidade) {
         client.close();
         throw new Error(`Estoque insuficiente para o produto: ${produto.nome}`);
       }
-
       item.precoUnitario = produto.preco;
       this.valorTotal += produto.preco * item.quantidade;
     }
@@ -53,7 +49,6 @@ class Pedido {
   async inserir() {
     try {
       await this.validar();
-
       const { db, client } = await connect();
 
       const pedidoData = {
@@ -66,7 +61,6 @@ class Pedido {
       const result = await db.collection("pedidos").insertOne(pedidoData);
       console.log("Pedido inserido:", result.insertedId);
 
-      // Atualizar o estoque dos produtos
       for (let item of this.itens) {
         await db.collection("produtos").updateOne(
           { _id: item.produtoId },
@@ -77,6 +71,39 @@ class Pedido {
       client.close();
     } catch (error) {
       Logger.log("Erro ao inserir pedido: " + error);
+    }
+  }
+
+  static async buscar(filtro = {}) {
+    try {
+      const { db, client } = await connect();
+      const pedidos = await db.collection("pedidos").find(filtro).toArray();
+      console.log("Pedidos encontrados:", pedidos);
+      client.close();
+    } catch (error) {
+      Logger.log("Erro ao buscar pedidos: " + error);
+    }
+  }
+
+  static async deletar(filtro) {
+    try {
+      const { db, client } = await connect();
+      const result = await db.collection("pedidos").deleteMany(filtro);
+      console.log("Pedidos deletados:", result.deletedCount);
+      client.close();
+    } catch (error) {
+      Logger.log("Erro ao deletar pedidos: " + error);
+    }
+  }
+
+  static async atualizar(filtro, novosDados) {
+    try {
+      const { db, client } = await connect();
+      const result = await db.collection("pedidos").updateOne(filtro, { $set: novosDados });
+      console.log("Pedidos atualizados:", result.modifiedCount);
+      client.close();
+    } catch (error) {
+      Logger.log("Erro ao atualizar pedido: " + error);
     }
   }
 }

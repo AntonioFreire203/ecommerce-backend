@@ -57,6 +57,21 @@ class Categoria {
       Logger.log("Erro ao deletar categorias: " + error);
     }
   }
+
+ static async atualizar(filtro, novosDados) {
+  try {
+    const { db, client } = await connect();
+    const result = await db.collection("categorias").updateOne(filtro, { $set: novosDados });
+    console.log("Categorias atualizadas:", result.modifiedCount);
+    client.close();
+  } catch (error) {
+    Logger.log("Erro ao atualizar categoria: " + error);
+  }
 }
+
+
+
+}
+
 
 module.exports = Categoria;

@@ -15,6 +15,7 @@ Este projeto implementa o backend de um sistema de e-commercee. O foco está no 
 
     Scripts de teste para simular operações e validar comportamentos
 ## Estrutura do Projeto
+```
 ecommerce-backend/
 ├── src/
 │   ├── db/
@@ -39,3 +40,4 @@ ecommerce-backend/
 ├── package.json
 ├── .gitignore
 └── README.md
+```

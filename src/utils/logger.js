@@ -1,21 +1,45 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 class Logger {
-  static log(error) {
-    const timestamp = new Date().toISOString();
-    const message = `[${timestamp}] - ${error}\n`;
+  constructor() {
+    this.logFile = path.join(__dirname, '../../logs/log.txt');
+    this.ensureLogFileExists();
+  }
 
-    const logDir = path.resolve(__dirname, "../../logs");
-    const logPath = path.join(logDir, "log.txt");
-
-    if (!fs.existsSync(logDir)) {
-      fs.mkdirSync(logDir, { recursive: true });
+  ensureLogFileExists() {
+    const logsDir = path.dirname(this.logFile);
+    if (!fs.existsSync(logsDir)) {
+      fs.mkdirSync(logsDir, { recursive: true });
     }
+    if (!fs.existsSync(this.logFile)) {
+      fs.writeFileSync(this.logFile, '');
+    }
+  }
 
-    fs.appendFileSync(logPath, message);
-    console.error(message); // Agora exibe no console também
+  log(message, type = 'INFO') {
+    const timestamp = new Date().toISOString();
+    const logEntry = `[${timestamp}] ${type}: ${message}\n`;
+    
+    try {
+      fs.appendFileSync(this.logFile, logEntry);
+      console.log(` Log registrado: ${type} - ${message}`);
+    } catch (error) {
+      console.error(' Erro ao escrever no log:', error);
+    }
+  }
+
+  error(message) {
+    this.log(message, 'ERROR');
+  }
+
+  info(message) {
+    this.log(message, 'INFO');
+  }
+
+  success(message) {
+    this.log(message, 'SUCCESS');
   }
 }
 
-module.exports = Logger;
+module.exports = new Logger();
