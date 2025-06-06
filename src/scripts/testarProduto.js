@@ -1,6 +1,9 @@
 const Produto = require("../models/produto");
 const { ObjectId } = require("mongodb");
 
+// produto deve estar vinculado a uma categoria existente
+// categoriaId deve ser um ObjectId válido de uma categoria existente no banco
+
 async function testarProduto() {
   const categoriaId = new ObjectId("684024ce75835fec0121710c");
 

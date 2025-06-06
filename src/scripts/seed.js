@@ -48,7 +48,7 @@ async function seed() {
 
     await db.collection("produtos").insertMany(produtos);
 
-    console.log("✅ Banco populado com sucesso");
+    console.log(" Banco populado com sucesso");
   } catch (err) {
     console.error("Erro ao executar seed:", err);
   } finally {
