@@ -5,15 +5,15 @@ Este projeto implementa o backend de um sistema de e-commercee. O foco está no 
 
 ## Visão Geral
 
-    CRUD completo para Usuários, Produtos, Categorias e Pedidos
+      1-CRUD completo para Usuários, Produtos, Categorias e Pedidos
 
-    Validações de regras de negócio no lado do servidor
+      2-Validações de regras de negócio no lado do servidor
 
-    Conexão direta com MongoDB via driver oficial
+     3-Conexão direta com MongoDB via driver oficial
 
-    Logs de erros registrados em logs/log.txt
+     4-Logs de erros registrados em logs/log.txt
 
-    Scripts de teste para simular operações e validar comportamentos
+     5-Scripts de teste para simular operações e validar comportamentos
 ## Estrutura do Projeto
 ```
 ecommerce-backend/
@@ -67,7 +67,20 @@ ecommerce-backend/
 ### Categoria
 - ✅ Impede nomes duplicados
 
-## Exemplos de Testes
+## Scripts de Teste
+
+Scripts localizados em `src/scripts/`:
+
+- **testarUsuario.js**: validações de email, senha, duplicação
+- **testarProduto.js**: estoque, preço, inserção válida  
+- **testarCategoria.js**: nome inválido, duplicação, atualização
+- **testarPedido.js**: pedidos com múltiplos produtos, controle de estoque
+
+Scripts utilitários (em `src/utils/`):
+
+- **listarUsuarios.js**
+- **listarProdutos.js** 
+- **listarCategorias.js**
 
 ```bash
 # Testar criação de usuário com e-mail inválido
@@ -83,7 +96,12 @@ node src/scripts/testarPedido.js
 node src/scripts/testarCategoria.js
 
 # Listar dados cadastrados
-node src/scripts/listarUsuarios.js
-node src/scripts/listarProdutos.js
-node src/scripts/listarCategorias.js
+node src/utils/listarUsuarios.js
+node src/utils/listarProdutos.js
+node src/utils/listarCategorias.js
 ```
+
+## 📄 Logs
+
+Os erros e exceções são registrados automaticamente em `logs/log.txt`.
+Esse arquivo serve como evidência do tratamento de exceções exigido no projeto.
