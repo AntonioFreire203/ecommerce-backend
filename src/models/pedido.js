@@ -15,41 +15,43 @@ class Pedido {
     }
 
     const { db, client } = await connect();
-
-    const usuario = await db.collection("usuarios").findOne({ _id: this.usuarioId });
-    if (!usuario) {
-      client.close();
-      throw new Error("Usuário não encontrado.");
-    }
-
-    const produtoIds = this.itens.map(item => item.produtoId);
-    const produtos = await db.collection("produtos")
-      .find({ _id: { $in: produtoIds } })
-      .toArray();
-
-    if (produtos.length !== this.itens.length) {
-      client.close();
-      throw new Error("Um ou mais produtos não existem.");
-    }
-
-    for (let item of this.itens) {
-      const produto = produtos.find(p => p._id.equals(item.produtoId));
-      if (!produto) continue;
-      if (produto.estoque < item.quantidade) {
-        client.close();
-        throw new Error(`Estoque insuficiente para o produto: ${produto.nome}`);
+    try {
+      const usuario = await db.collection("usuarios").findOne({ _id: this.usuarioId });
+      if (!usuario) {
+        throw new Error("Usuário não encontrado.");
       }
-      item.precoUnitario = produto.preco;
-      this.valorTotal += produto.preco * item.quantidade;
-    }
 
-    client.close();
+      const produtoIds = this.itens.map(item => item.produtoId);
+      const produtos = await db.collection("produtos")
+        .find({ _id: { $in: produtoIds } })
+        .toArray();
+
+      if (produtos.length !== this.itens.length) {
+        throw new Error("Um ou mais produtos não existem.");
+      }
+
+      for (let item of this.itens) {
+        const produto = produtos.find(p => p._id.equals(item.produtoId));
+        if (!produto) continue;
+        if (produto.estoque < item.quantidade) {
+          throw new Error(`Estoque insuficiente para o produto: ${produto.nome}`);
+        }
+        item.precoUnitario = produto.preco;
+        this.valorTotal += produto.preco * item.quantidade;
+      }
+    } finally {
+      client.close();
+    }
   }
 
   async inserir() {
+    let client;
     try {
       await this.validar();
-      const { db, client } = await connect();
+
+      const conn = await connect();
+      const db = conn.db;
+      client = conn.client;
 
       const pedidoData = {
         usuarioId: this.usuarioId,
@@ -67,43 +69,58 @@ class Pedido {
           { $inc: { estoque: -item.quantidade } }
         );
       }
-
-      client.close();
     } catch (error) {
       Logger.log("Erro ao inserir pedido: " + error);
+    } finally {
+      client?.close();
     }
   }
 
   static async buscar(filtro = {}) {
+    let client;
     try {
-      const { db, client } = await connect();
+      const conn = await connect();
+      const db = conn.db;
+      client = conn.client;
+
       const pedidos = await db.collection("pedidos").find(filtro).toArray();
       console.log("Pedidos encontrados:", pedidos);
-      client.close();
     } catch (error) {
       Logger.log("Erro ao buscar pedidos: " + error);
+    } finally {
+      client?.close();
     }
   }
 
   static async deletar(filtro) {
+    let client;
     try {
-      const { db, client } = await connect();
+      const conn = await connect();
+      const db = conn.db;
+      client = conn.client;
+
       const result = await db.collection("pedidos").deleteMany(filtro);
       console.log("Pedidos deletados:", result.deletedCount);
-      client.close();
     } catch (error) {
       Logger.log("Erro ao deletar pedidos: " + error);
+    } finally {
+      client?.close();
     }
   }
 
   static async atualizar(filtro, novosDados) {
+    let client;
     try {
-      const { db, client } = await connect();
+      const conn = await connect();
+      const db = conn.db;
+      client = conn.client;
+
       const result = await db.collection("pedidos").updateOne(filtro, { $set: novosDados });
       console.log("Pedidos atualizados:", result.modifiedCount);
-      client.close();
     } catch (error) {
-      Logger.log("Erro ao atualizar pedido: " + error);
+      Logger.log(`Erro ao atualizar pedidos com filtro ${JSON.stringify(filtro)}: ${error}`);
+    } finally {
+      client?.close();
     }
   }
 }
