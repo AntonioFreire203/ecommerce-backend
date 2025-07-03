@@ -1,15 +1,29 @@
 
 const Usuario = require('../models/usuario');
+const jwt = require('jsonwebtoken');
 
 exports.createUsuario = async (req, res) => {
   try {
     const { nome, email, senha } = req.body;
     const usuario = new Usuario(nome, email, senha);
-    await usuario.inserir();
-    res.status(201).send(usuario);
+    const insertedId = await usuario.inserir();
+    res.status(201).send({ id: insertedId, nome, email });
   } catch (error) {
     res.status(400).send({ error: error.message });
   }
+};
+
+exports.login = async (req, res) => {
+    try {
+        const { email, senha } = req.body;
+        const usuario = await Usuario.validarSenha(email, senha);
+
+        const token = jwt.sign({ id: usuario._id, nome: usuario.nome }, 'your_jwt_secret', { expiresIn: '1h' });
+
+        res.status(200).send({ usuario, token });
+    } catch (error) {
+        res.status(401).send({ error: error.message });
+    }
 };
 
 exports.getUsuarios = async (req, res) => {

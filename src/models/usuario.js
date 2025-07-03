@@ -1,5 +1,6 @@
 const { connect } = require("../db/db");
 const Logger = require("../utils/logger");
+const bcrypt = require('bcrypt');
 
 class Usuario {
   constructor(nome, email, senha) {
@@ -10,7 +11,7 @@ class Usuario {
   }
 
   static validarEmail(email) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const regex = /^[^@]+@[^@]+\.[^@]+$/;
     return regex.test(email);
   }
 
@@ -43,17 +44,21 @@ class Usuario {
         throw new Error("Já existe um usuário com esse e-mail.");
       }
 
+      const hashedPassword = await bcrypt.hash(this.senha, 10);
+
       const result = await db.collection("usuarios").insertOne({
         nome: this.nome,
         email: this.email,
-        senha: this.senha,
+        senha: hashedPassword,
         dataCadastro: this.dataCadastro,
       });
 
       console.log("Usuário inserido:", result.insertedId);
       Logger.log(`Usuário ${this.nome} inserido com sucesso.`);
+      return result.insertedId;
     } catch (error) {
       Logger.log("Erro ao inserir usuário: " + error);
+      throw error;
     } finally {
       client?.close();
     }
@@ -66,11 +71,41 @@ class Usuario {
       const db = conn.db;
       client = conn.client;
       const usuarios = await db.collection("usuarios").find(filtro).toArray();
-      console.log("Usuários encontrados:", usuarios);
+      return usuarios;
     } catch (error) {
       Logger.log("Erro ao buscar usuários: " + error);
-    } finally {
+      throw error;
+    }
+    finally {
       client?.close();
+    }
+  }
+
+  static async validarSenha(email, senha) {
+    let client;
+    try {
+      const conn = await connect();
+      const db = conn.db;
+      client = conn.client;
+
+      const usuario = await db.collection("usuarios").findOne({ email });
+      if (!usuario) {
+        throw new Error("Authentication failed: User not found.");
+      }
+
+      const isMatch = await bcrypt.compare(senha, usuario.senha);
+      if (!isMatch) {
+        throw new Error("Authentication failed: Invalid password.");
+      }
+
+      delete usuario.senha;
+      return usuario;
+
+    } catch (error) {
+        Logger.log("Erro na validação de senha: " + error);
+        throw error;
+    } finally {
+        client?.close();
     }
   }
 
@@ -78,6 +113,10 @@ class Usuario {
     let client;
     try {
       Usuario.validarAtualizacao(novosDados);
+
+      if (novosDados.senha) {
+        novosDados.senha = await bcrypt.hash(novosDados.senha, 10);
+      }
 
       const conn = await connect();
       const db = conn.db;
@@ -90,6 +129,7 @@ class Usuario {
       console.log("Usuários atualizados:", result.modifiedCount);
     } catch (error) {
       Logger.log(`Erro ao atualizar usuários com filtro ${JSON.stringify(filtro)}: ${error}`);
+      throw error;
     } finally {
       client?.close();
     }
@@ -106,7 +146,9 @@ class Usuario {
       console.log("Usuários deletados:", result.deletedCount);
     } catch (error) {
       Logger.log("Erro ao deletar usuários: " + error);
-    } finally {
+      throw error;
+    }
+    finally {
       client?.close();
     }
   }
