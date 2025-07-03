@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/AntonioFreire203/ecommerce-backend#readme",
   "dependencies": {
+    "express": "^5.1.0",
     "mongodb": "^6.16.0"
   }
 }
