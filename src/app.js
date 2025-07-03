@@ -46,7 +46,7 @@ app.get('/cadastro', (req, res) => {
 });
 
 app.get('/home', isAuthenticated, (req, res) => {
-  res.render('home');
+  res.render('home', { userName: req.session.userName });
 });
 
 app.get('/logout', (req, res) => {
@@ -66,6 +66,8 @@ app.get('/', (req, res) => {
     res.redirect('/login');
   }
 });
+
+require('./scripts/seed');
 
 app.listen(port, () => {
   console.log(`O Servidor está rodando na http://localhost:${port}`);

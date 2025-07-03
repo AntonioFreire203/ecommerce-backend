@@ -21,6 +21,7 @@ exports.login = async (req, res) => {
         const token = jwt.sign({ id: usuario._id, nome: usuario.nome }, 'your_jwt_secret', { expiresIn: '1h' });
 
         req.session.userId = usuario._id;
+        req.session.userName = usuario.nome;
 
         res.redirect('/home');
     } catch (error) {
