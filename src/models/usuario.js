@@ -19,7 +19,7 @@ class Usuario {
     if (dados.email && !Usuario.validarEmail(dados.email)) {
       throw new Error("E-mail inválido.");
     }
-    if (dados.senha && dados.senha.length < 6) {
+    if (dados.senha.length < 6) {
       throw new Error("A senha deve ter no mínimo 6 caracteres.");
     }
   }
@@ -32,7 +32,10 @@ class Usuario {
       }
 
       if (!this.senha || this.senha.length < 6) {
+        Logger.log(this.senha);
         throw new Error("A senha deve ter no mínimo 6 caracteres.");
+      } else {
+        Logger.log(this.senha);
       }
 
       const conn = await connect();
@@ -89,6 +92,7 @@ class Usuario {
       client = conn.client;
 
       const usuario = await db.collection("usuarios").findOne({ email });
+      Logger.log(usuario.senha);
       if (!usuario) {
         throw new Error("Authentication failed: User not found.");
       }

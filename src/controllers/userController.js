@@ -7,9 +7,9 @@ exports.createUsuario = async (req, res) => {
     const { nome, email, senha } = req.body;
     const usuario = new Usuario(nome, email, senha);
     const insertedId = await usuario.inserir();
-    res.status(201).send({ id: insertedId, nome, email });
+    res.redirect('/login');
   } catch (error) {
-    res.status(400).send({ error: error.message });
+    res.render('cadastro', { error: error.message });
   }
 };
 
@@ -20,9 +20,11 @@ exports.login = async (req, res) => {
 
         const token = jwt.sign({ id: usuario._id, nome: usuario.nome }, 'your_jwt_secret', { expiresIn: '1h' });
 
-        res.status(200).send({ usuario, token });
+        req.session.userId = usuario._id;
+
+        res.redirect('/home');
     } catch (error) {
-        res.status(401).send({ error: error.message });
+        res.render('login', { error: error.message });
     }
 };
 

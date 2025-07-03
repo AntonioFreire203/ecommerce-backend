@@ -42,7 +42,7 @@ exports.updateProduto = async (req, res) => {
   }
 };
 
-exports.deleteProduto = async (req,. res) => {
+exports.deleteProduto = async (req, res) => {
   try {
     await Produto.deletar({ _id: req.params.id });
     res.status(200).send({ message: 'Produto deletado com sucesso' });
