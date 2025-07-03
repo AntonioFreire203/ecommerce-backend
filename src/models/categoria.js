@@ -55,6 +55,7 @@ class Categoria {
 
       const categorias = await db.collection("categorias").find(filtro).toArray();
       console.log("Categorias encontradas:", categorias);
+      return categorias
     } catch (error) {
       Logger.log("Erro ao buscar categorias: " + error);
     } finally {

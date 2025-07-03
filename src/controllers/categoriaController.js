@@ -15,7 +15,8 @@ exports.createCategoria = async (req, res) => {
 exports.getCategorias = async (req, res) => {
   try {
     const categorias = await Categoria.buscar();
-    res.status(200).send(categorias);
+    console.log(categorias);
+    res.render('categorias', { categorias });
   } catch (error) {
     res.status(500).send({ error: error.message });
   }
