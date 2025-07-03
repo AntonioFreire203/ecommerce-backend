@@ -19,12 +19,26 @@ async function seed() {
     };
     const usuarioResult = await db.collection("usuarios").insertOne(usuario);
 
-    // Inserir categoria
-    const categoria = {
-      nome: "Informática",
-      descricao: "Produtos de tecnologia"
-    };
-    const categoriaResult = await db.collection("categorias").insertOne(categoria);
+    // Inserir categorias
+    const categorias = [
+      {
+        nome: "Informática",
+        descricao: "Produtos de tecnologia"
+      },
+      {
+        nome: "Eletrônicos",
+        descricao: "Dispositivos eletrônicos em geral"
+      },
+      {
+        nome: "Livros",
+        descricao: "Livros de diversos gêneros"
+      },
+      {
+        nome: "Casa e Decoração",
+        descricao: "Itens para o lar e decoração"
+      }
+    ];
+    const categoriaResult = await db.collection("categorias").insertMany(categorias);
 
     // Inserir produtos
     const produtos = [
@@ -34,7 +48,7 @@ async function seed() {
         preco: 199.99,
         estoque: 10,
         disponivel: true,
-        categoriaId: categoriaResult.insertedId
+        categoriaId: categoriaResult.insertedIds[0] // Informática
       },
       {
         nome: "Cabo USB",
@@ -42,7 +56,23 @@ async function seed() {
         preco: 25,
         estoque: 5,
         disponivel: true,
-        categoriaId: categoriaResult.insertedId
+        categoriaId: categoriaResult.insertedIds[0] // Informática
+      },
+      {
+        nome: "Smart TV 50 polegadas",
+        descricao: "TV de alta resolução",
+        preco: 2500.00,
+        estoque: 3,
+        disponivel: true,
+        categoriaId: categoriaResult.insertedIds[1] // Eletrônicos
+      },
+      {
+        nome: "O Senhor dos Anéis",
+        descricao: "Trilogia completa",
+        preco: 150.00,
+        estoque: 20,
+        disponivel: true,
+        categoriaId: categoriaResult.insertedIds[2] // Livros
       }
     ];
 

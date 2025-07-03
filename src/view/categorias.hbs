@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Categorias</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/home">Ecommerce</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/categorias">Categorias</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/logout">Sair</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <h1 class="mb-4">Lista de Categorias</h1>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Descrição</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each categorias}}
+                <tr>
+                    <td>{{nome}}</td>
+                    <td>{{descricao}}</td>
+                </tr>
+                {{else}}
+                <tr>
+                    <td colspan="2">Nenhuma categoria encontrada.</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">Sistema feito por: Antonio Freire Junior - RA: 2476509 e Ricardo Henrique A. da S. Sousa - RA: 2539047</span>
+        </div>
+    </footer>
+</body>
+</html>
